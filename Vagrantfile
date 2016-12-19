@@ -2,10 +2,10 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "bento/centos-6.7"
-  config.vm.box_version = "2.2.7"
-
   config.vm.define "rundeck" do |rundeck|
+    rundeck.vm.box = "bento/centos-6.7"
+    rundeck.vm.box_version = "2.2.7"
+
     rundeck.vm.network :private_network, ip: "192.168.35.46"
     rundeck.vm.network :forwarded_port, guest: 22, host: 4991
 
@@ -22,6 +22,9 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define "web" do |web|
+    web.vm.box = "server4001/php7-centos"
+    web.vm.box_version = "0.2.0"
+
     web.vm.network :private_network, ip: "192.168.35.47"
     web.vm.network :forwarded_port, guest: 22, host: 4992
 
