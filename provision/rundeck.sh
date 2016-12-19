@@ -8,8 +8,12 @@ yum install -y rundeck
 # Configure Rundeck.
 cp /vagrant/config/rundeck/framework.properties /etc/rundeck/framework.properties
 cp /vagrant/config/rundeck/rundeck-config.properties /etc/rundeck/rundeck-config.properties
+cp /vagrant/config/rundeck/ssh/{id_rsa,id_rsa.pub} /var/lib/rundeck/.ssh
 chown rundeck: /etc/rundeck/{framework.properties,rundeck-config.properties}
+chown -R rundeck: /var/lib/rundeck/.ssh
 chmod 0640 /etc/rundeck/{framework.properties,rundeck-config.properties}
+chmod 0600 /var/lib/rundeck/.ssh/id_rsa
+chmod 0644 /var/lib/rundeck/.ssh/id_rsa.pub
 service rundeckd start
 chkconfig rundeckd on
 
