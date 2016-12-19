@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <node name="dev.rundeck-web.loc" description="Web server node" tags="" hostname="dev.rundeck-web.loc" osArch="amd64" osFamily="unix" osName="Linux" osVersion="2.6.32-573.el6.x86_64" username="vagrant"/>
+</project>

@@ -13,11 +13,16 @@ chmod 0640 /etc/rundeck/{framework.properties,rundeck-config.properties}
 service rundeckd start
 chkconfig rundeckd on
 
+# Set up the WebServer project for Rundeck.
+mkdir -p /var/rundeck/projects/WebServer/{acls,etc}
+cp /vagrant/config/rundeck/projects/WebServer/{resources.xml,project.properties} /var/rundeck/projects/WebServer/etc
+chown -R rundeck: /var/rundeck/projects
+
 # Add EPEL repo.
 rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
 
 # Install other packages.
-yum install -y vim-enhanced bash-completion
+yum install -y vim-enhanced bash-completion tree
 
 # Hosts file.
 cp /vagrant/config/hosts/hosts.rundeck /etc/hosts
