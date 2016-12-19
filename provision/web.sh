@@ -15,6 +15,10 @@ yum install -y vim-enhanced bash-completion git yum-utils
 # Install PHP7.
 yum install -y php70w php70w-cli php70w-fpm php70w-common php70w-devel php70w-gd php70w-mbstring php70w-mcrypt php70w-mysqlnd php70w-pdo php70w-pear php70w-pecl-xdebug php70w-xml
 
+# Configure PHP7.
+service php-fpm start
+chkconfig php-fpm on
+
 # Install MySQL 5.6.
 yum install -y http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
 yum-config-manager --disable mysql56-community
