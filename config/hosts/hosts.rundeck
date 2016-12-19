@@ -2,3 +2,4 @@
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 
 127.0.0.1 dev.rundeck.loc
+192.168.35.47 dev.rundeck-web.loc
