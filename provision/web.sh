@@ -15,9 +15,8 @@ yum install -y vim-enhanced bash-completion git yum-utils
 # Install PHP7.
 yum install -y php70w php70w-cli php70w-fpm php70w-common php70w-devel php70w-gd php70w-mbstring php70w-mcrypt php70w-mysqlnd php70w-pdo php70w-pear php70w-pecl-xdebug php70w-xml
 
-# Configure PHP7.
-service php-fpm start
-chkconfig php-fpm on
+# Configure PHP-FPM.
+cp /vagrant/config/php/www.conf /etc/php-fpm.d/www.conf
 
 # Install MySQL 5.6.
 yum install -y http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
@@ -56,3 +55,20 @@ chown vagrant: /home/vagrant/.my.cnf
 mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'127.0.0.1' identified by '$MYSQL_ROOT_PASSWORD';"
 
 service mysqld restart
+
+# Install Nginx.
+yum install -y nginx
+
+# Configure Nginx.
+cp /vagrant/config/nginx/nginx.conf /etc/nginx/nginx.conf
+rm -rf /etc/nginx/conf.d/*.conf
+cp /vagrant/config/nginx/web.conf /etc/nginx/conf.d
+mkdir -p /var/www/html
+cp /vagrant/config/nginx/index.php /var/www/html/index.php
+chown -R nginx: /var/www/html
+service nginx start
+chkconfig nginx on
+
+# Start PHP-FPM.
+service php-fpm start
+chkconfig php-fpm on
