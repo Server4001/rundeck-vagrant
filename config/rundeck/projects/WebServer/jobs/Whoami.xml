@@ -1,0 +1,43 @@
+<joblist>
+  <job>
+    <description>Test job</description>
+    <dispatch>
+      <excludePrecedence>true</excludePrecedence>
+      <keepgoing>false</keepgoing>
+      <rankOrder>ascending</rankOrder>
+      <threadcount>1</threadcount>
+    </dispatch>
+    <executionEnabled>true</executionEnabled>
+    <group>WebServer</group>
+    <loglevel>INFO</loglevel>
+    <name>Whoami</name>
+    <nodeFilterEditable>false</nodeFilterEditable>
+    <nodefilters>
+      <filter>name: dev.rundeck-web.loc</filter>
+    </nodefilters>
+    <nodesSelectedByDefault>true</nodesSelectedByDefault>
+    <notification>
+      <onfailure>
+        <email attachLog='true' recipients='myemail@gmail.com' subject='Failed Rundeck job' />
+      </onfailure>
+    </notification>
+    <schedule>
+      <dayofmonth />
+      <month day='*' month='*' />
+      <time hour='*' minute='*/1' seconds='0' />
+      <year year='*' />
+    </schedule>
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='node-first'>
+      <command>
+        <description>Blah</description>
+        <exec>whoami &amp;&amp; pwd &amp;&amp; hostname &amp;&amp; php -v</exec>
+      </command>
+      <pluginConfig>
+        <WorkflowStrategy>
+          <node-first></node-first>
+        </WorkflowStrategy>
+      </pluginConfig>
+    </sequence>
+  </job>
+</joblist>

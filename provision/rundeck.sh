@@ -1,5 +1,19 @@
 #!/usr/bin/env bash
 
+# Disable unused services.
+service nginx stop
+service php-fpm stop
+service beanstalkd stop
+service memcached stop
+service redis stop
+
+# Create the rundeck MySQL database.
+mysql -u root -ppassword -e "CREATE DATABASE IF NOT EXISTS rundeckdb CHARACTER SET = 'utf8' COLLATE = 'utf8_general_ci';" 2> /dev/null
+mysql -u root -ppassword -e "CREATE USER 'rundeckdb'@'localhost' IDENTIFIED BY 'password';" 2> /dev/null
+mysql -u root -ppassword -e "GRANT ALTER, ALTER ROUTINE, CREATE, CREATE ROUTINE, CREATE TEMPORARY TABLES, CREATE VIEW, DELETE, DROP, EVENT, EXECUTE, INDEX, INSERT, LOCK TABLES, REFERENCES, SELECT, SHOW VIEW, TRIGGER, UPDATE on rundeckdb.* TO 'rundeckdb'@'localhost';" 2> /dev/null
+mysql -u root -ppassword -e "CREATE USER 'rundeckdb'@'127.0.0.1' IDENTIFIED BY 'password';" 2> /dev/null
+mysql -u root -ppassword -e "GRANT ALTER, ALTER ROUTINE, CREATE, CREATE ROUTINE, CREATE TEMPORARY TABLES, CREATE VIEW, DELETE, DROP, EVENT, EXECUTE, INDEX, INSERT, LOCK TABLES, REFERENCES, SELECT, SHOW VIEW, TRIGGER, UPDATE on rundeckdb.* TO 'rundeckdb'@'127.0.0.1';" 2> /dev/null
+
 # Install Rundeck and dependencies.
 yum install -y java-1.7.0
 rpm -Uvh http://repo.rundeck.org/latest.rpm
@@ -21,12 +35,6 @@ chkconfig rundeckd on
 mkdir -p /var/rundeck/projects/WebServer/{acls,etc}
 cp /vagrant/config/rundeck/projects/WebServer/{resources.xml,project.properties} /var/rundeck/projects/WebServer/etc
 chown -R rundeck: /var/rundeck/projects
-
-# Add EPEL repo.
-rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
-
-# Install other packages.
-yum install -y vim-enhanced bash-completion tree
 
 # Hosts file.
 cp /vagrant/config/hosts/hosts.rundeck /etc/hosts
