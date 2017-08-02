@@ -14,3 +14,7 @@ A vagrant environment that sets up two servers. A Rundeck server and a web serve
 * SSH into the Rundeck server with: `vagrant ssh rundeck`.
 * SSH into the web server with: `vagrant ssh web`.
 
+### A quick note on SSH Keys
+
+This repo contains private RSA keys used to SSH between servers. This is just an example. Never store private RSA keys in a git repo like this.
+
