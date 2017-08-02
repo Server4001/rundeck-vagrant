@@ -20,9 +20,10 @@ mysql -u root -ppassword -e "GRANT ALTER, ALTER ROUTINE, CREATE, CREATE ROUTINE,
 # Install Rundeck and dependencies.
 yum install -y java-1.7.0
 rpm -Uvh http://repo.rundeck.org/latest.rpm
-yum install -y rundeck
+yum install -y rundeck-2.6.1
 
 # Configure Rundeck.
+mkdir -p ${rundeck_home}/var/storage/content/keys
 cp ${rundeck_configs}/framework.properties /etc/rundeck/framework.properties
 cp ${rundeck_configs}/rundeck-config.properties /etc/rundeck/rundeck-config.properties
 cp ${rundeck_configs}/ssh/{id_rsa,id_rsa.pub} ${rundeck_home}/.ssh
@@ -33,7 +34,7 @@ chmod 0640 /etc/rundeck/{framework.properties,rundeck-config.properties}
 chmod 0600 ${rundeck_home}/.ssh/id_rsa
 chmod 0644 ${rundeck_home}/.ssh/id_rsa.pub
 chmod 0600 ${rundeck_home}/var/storage/content/keys/rundeck.pem
-chown rundeck: ${rundeck_home}/var/storage/content/keys/rundeck.pem
+chown -R rundeck: ${rundeck_home}/var/storage
 service rundeckd start
 chkconfig rundeckd on
 
