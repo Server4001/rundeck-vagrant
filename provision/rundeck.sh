@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+rundeck_home=/var/lib/rundeck
+rundeck_configs=/vagrant/config/rundeck
+
 # Disable unused services.
 service nginx stop
 service php-fpm stop
@@ -20,20 +23,23 @@ rpm -Uvh http://repo.rundeck.org/latest.rpm
 yum install -y rundeck
 
 # Configure Rundeck.
-cp /vagrant/config/rundeck/framework.properties /etc/rundeck/framework.properties
-cp /vagrant/config/rundeck/rundeck-config.properties /etc/rundeck/rundeck-config.properties
-cp /vagrant/config/rundeck/ssh/{id_rsa,id_rsa.pub} /var/lib/rundeck/.ssh
+cp ${rundeck_configs}/framework.properties /etc/rundeck/framework.properties
+cp ${rundeck_configs}/rundeck-config.properties /etc/rundeck/rundeck-config.properties
+cp ${rundeck_configs}/ssh/{id_rsa,id_rsa.pub} ${rundeck_home}/.ssh
+cp ${rundeck_configs}/ssh/rundeck.pem ${rundeck_home}/var/storage/content/keys/rundeck.pem
 chown rundeck: /etc/rundeck/{framework.properties,rundeck-config.properties}
-chown -R rundeck: /var/lib/rundeck/.ssh
+chown -R rundeck: ${rundeck_home}/.ssh
 chmod 0640 /etc/rundeck/{framework.properties,rundeck-config.properties}
-chmod 0600 /var/lib/rundeck/.ssh/id_rsa
-chmod 0644 /var/lib/rundeck/.ssh/id_rsa.pub
+chmod 0600 ${rundeck_home}/.ssh/id_rsa
+chmod 0644 ${rundeck_home}/.ssh/id_rsa.pub
+chmod 0600 ${rundeck_home}/var/storage/content/keys/rundeck.pem
+chown rundeck: ${rundeck_home}/var/storage/content/keys/rundeck.pem
 service rundeckd start
 chkconfig rundeckd on
 
 # Set up the WebServer project for Rundeck.
 mkdir -p /var/rundeck/projects/WebServer/{acls,etc}
-cp /vagrant/config/rundeck/projects/WebServer/{resources.xml,project.properties} /var/rundeck/projects/WebServer/etc
+cp ${rundeck_configs}/projects/WebServer/{resources.xml,project.properties} /var/rundeck/projects/WebServer/etc
 chown -R rundeck: /var/rundeck/projects
 
 # Hosts file.
