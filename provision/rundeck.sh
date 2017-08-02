@@ -26,15 +26,17 @@ yum install -y rundeck-2.6.1
 mkdir -p ${rundeck_home}/var/storage/content/keys
 cp ${rundeck_configs}/framework.properties /etc/rundeck/framework.properties
 cp ${rundeck_configs}/rundeck-config.properties /etc/rundeck/rundeck-config.properties
+cp ${rundeck_configs}/profile /etc/rundeck/profile
 cp ${rundeck_configs}/ssh/{id_rsa,id_rsa.pub} ${rundeck_home}/.ssh
 cp ${rundeck_configs}/ssh/rundeck.pem ${rundeck_home}/var/storage/content/keys/rundeck.pem
-chown rundeck: /etc/rundeck/{framework.properties,rundeck-config.properties}
+chown rundeck: /etc/rundeck/{framework.properties,rundeck-config.properties,profile}
 chown -R rundeck: ${rundeck_home}/.ssh
-chmod 0640 /etc/rundeck/{framework.properties,rundeck-config.properties}
+chmod 0640 /etc/rundeck/{framework.properties,rundeck-config.properties,profile}
 chmod 0600 ${rundeck_home}/.ssh/id_rsa
 chmod 0644 ${rundeck_home}/.ssh/id_rsa.pub
-chmod 0600 ${rundeck_home}/var/storage/content/keys/rundeck.pem
 chown -R rundeck: ${rundeck_home}/var/storage
+chmod -R 0775 ${rundeck_home}/var/storage
+chmod 0600 ${rundeck_home}/var/storage/content/keys/rundeck.pem
 service rundeckd start
 chkconfig rundeckd on
 
