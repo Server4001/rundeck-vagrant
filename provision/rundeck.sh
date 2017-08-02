@@ -20,7 +20,7 @@ mysql -u root -ppassword -e "GRANT ALTER, ALTER ROUTINE, CREATE, CREATE ROUTINE,
 # Install Rundeck and dependencies.
 yum install -y java-1.7.0
 rpm -Uvh http://repo.rundeck.org/latest.rpm
-yum install -y rundeck-2.6.1
+yum install -y rundeck-2.6.1 rundeck-config-2.6.1
 
 # Configure Rundeck.
 mkdir -p ${rundeck_home}/var/storage/content/keys
