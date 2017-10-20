@@ -4,11 +4,14 @@ rundeck_home=/var/lib/rundeck
 rundeck_configs=/vagrant/config/rundeck
 
 # Disable unused services.
-service nginx stop
 service php-fpm stop
 service beanstalkd stop
 service memcached stop
 service redis stop
+chkconfig php-fpm off
+chkconfig beanstalkd off
+chkconfig memcached off
+chkconfig redis off
 
 # Create the rundeck MySQL database.
 mysql -u root -ppassword -e "CREATE DATABASE IF NOT EXISTS rundeckdb CHARACTER SET = 'utf8' COLLATE = 'utf8_general_ci';" 2> /dev/null
@@ -18,9 +21,9 @@ mysql -u root -ppassword -e "CREATE USER 'rundeckdb'@'127.0.0.1' IDENTIFIED BY '
 mysql -u root -ppassword -e "GRANT ALTER, ALTER ROUTINE, CREATE, CREATE ROUTINE, CREATE TEMPORARY TABLES, CREATE VIEW, DELETE, DROP, EVENT, EXECUTE, INDEX, INSERT, LOCK TABLES, REFERENCES, SELECT, SHOW VIEW, TRIGGER, UPDATE on rundeckdb.* TO 'rundeckdb'@'127.0.0.1';" 2> /dev/null
 
 # Install Rundeck and dependencies.
-yum install -y java-1.7.0
+yum install -y java-1.8.0-openjdk
 rpm -Uvh http://repo.rundeck.org/latest.rpm
-yum install -y rundeck-2.6.1 rundeck-config-2.6.1
+yum install -y rundeck-2.9.3 rundeck-config-2.9.3 rundeck-cli-1.0.16
 
 # Configure Rundeck.
 mkdir -p ${rundeck_home}/var/storage/content/keys
@@ -48,9 +51,26 @@ chown -R rundeck: /var/rundeck/projects
 # Hosts file.
 cp /vagrant/config/hosts/hosts.rundeck /etc/hosts
 
+# Configure nginx.
+rm -f /etc/nginx/conf.d/default.conf
+cp /vagrant/config/nginx/rundeck/rundeck.conf /etc/nginx/conf.d/rundeck.conf
+chmod 0644 /etc/nginx/conf.d/rundeck.conf
+service nginx restart
+
 # Copy .bashrc files.
 cp /vagrant/config/bash/vagrant.bashrc /home/vagrant/.bashrc
 cp /vagrant/config/bash/root.bashrc /root/.bashrc
 chown vagrant: /home/vagrant/.bashrc
 
-# Can login to rundeck at: dev.rundeck.loc:4440 with either user:user or admin:admin.
+# Set up the rundeck CLI.
+mkdir -p /home/vagrant/.rd
+chown vagrant:vagrant /home/vagrant/.rd
+cp /vagrant/config/rundeck/rd.cli.conf /home/vagrant/.rd/rd.conf
+chown vagrant:vagrant /home/vagrant/.rd/rd.conf
+chmod 0600 /home/vagrant/.rd/rd.conf
+
+# Import the whoami job.
+sudo -Hu vagrant rd jobs load -f /vagrant/config/rundeck/projects/WebServer/jobs/Whoami.xml -p WebServer -F xml -d update
+
+# Can login to rundeck at: dev.rundeck.loc with either user:user or admin:admin.
+# Use cli as vagrant user. EG: `rd jobs list -p WebServer`

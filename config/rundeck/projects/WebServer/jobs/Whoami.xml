@@ -27,7 +27,7 @@
       <time hour='*' minute='*/1' seconds='0' />
       <year year='*' />
     </schedule>
-    <scheduleEnabled>true</scheduleEnabled>
+    <scheduleEnabled>false</scheduleEnabled>
     <sequence keepgoing='false' strategy='node-first'>
       <command>
         <description>Blah</description>
