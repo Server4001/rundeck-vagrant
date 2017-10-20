@@ -69,8 +69,23 @@ cp /vagrant/config/rundeck/rd.cli.conf /home/vagrant/.rd/rd.conf
 chown vagrant:vagrant /home/vagrant/.rd/rd.conf
 chmod 0600 /home/vagrant/.rd/rd.conf
 
-# Import the whoami job.
-sudo -Hu vagrant rd jobs load -f /vagrant/config/rundeck/projects/WebServer/jobs/Whoami.xml -p WebServer -F xml -d update
+# Wait for the rundeckd service to finish booting up.
+MAX_SLEEP=120 # 2 minutes.
+SLEEP_COUNT=0
+while [ `ss -tupane | grep 4440 | grep java | grep LISTEN | wc -l` -lt 1 ]; do
+    if [ $SLEEP_COUNT -ge $MAX_SLEEP ]; then
+        # Took too long for rundeckd service to boot up.
+        echo "UNABLE TO IMPORT RUNDECK JOB, AS SERVICE TOOK TOO LONG TO BOOT. PLEASE IMPORT JOB MANUALLY."
+        break
+    fi
 
+    sleep 1s
+    let SLEEP_COUNT=SLEEP_COUNT+1
+done
+
+if [ $SLEEP_COUNT -lt $MAX_SLEEP ]; then
+    # Import the whoami job.
+    sudo -Hu vagrant rd jobs load -f /vagrant/config/rundeck/projects/WebServer/jobs/Whoami.xml -p WebServer -F xml -d update
+fi
 # Can login to rundeck at: dev.rundeck.loc with either user:user or admin:admin.
 # Use cli as vagrant user. EG: `rd jobs list -p WebServer`
